@@ -3,6 +3,8 @@ project(influxdb_store)
 
 find_package(catkin REQUIRED)
 
+catkin_python_setup()
+
 catkin_package()
 
 file(GLOB NODE_SCRIPTS_FILES node_scripts/*)
