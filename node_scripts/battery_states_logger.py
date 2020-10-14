@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
-from datetime import datetime
 import influxdb
 import rospy
+
+from influxdb_store.utils import timestamp_to_influxdb_time
 
 from pr2_msgs.msg import BatteryServer2
 
@@ -19,9 +20,7 @@ class BatteryStatesLogger(object):
             '~input', BatteryServer2, self._cb, queue_size=10)
 
     def _cb(self, msg):
-        timestamp = msg.header.stamp
-        time = datetime.utcfromtimestamp(timestamp.to_sec())
-        time = time.isoformat("T") + "Z"
+        time = timestamp_to_influxdb_time(msg.header.stamp)
         battery_id = msg.id
         battery_charge = msg.average_charge / 100.0
         query = [{
