@@ -2,6 +2,8 @@
 
 ROS package for influxdb store
 
+![influxdb_grafana](./media/influxdb_grafana.png)
+
 
 ## Sample
 
