@@ -1,8 +1,9 @@
 <launch>
   <arg name="host" default="localhost" />
   <arg name="port" default="8086" />
-  <arg name="database" default="test" />
+  <arg name="database" default="pr1040" />
   <arg name="joint_states_topic" default="/joint_states" />
+  <arg name="battery_states_topic" default="/battery/server2" />
 
   <node name="joint_states_logger" pkg="influxdb_store" type="joint_states_logger.py"
         output="screen">
@@ -13,4 +14,15 @@
       database: $(arg database)
     </rosparam>
   </node>
+
+  <node name="battery_states_logger" pkg="influxdb_store" type="battery_states_logger.py"
+        output="screen">
+    <remap from="~input" to="$(arg battery_states_topic)" /> 
+    <rosparam subst_value="true">
+      host: $(arg host)
+      port: $(arg port)
+      database: $(arg database)
+    </rosparam>
+  </node>
+
 </launch>

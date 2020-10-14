@@ -1,0 +1,9 @@
+<launch>
+  <include file="$(find influxdb_store)/launch/influxdb_logger.launch">
+    <arg name="host" value="localhost" />
+    <arg name="port" value="8086" />
+    <arg name="database" value="pr1040" />
+    <arg name="joint_states_topic" value="/joint_states" />
+    <arg name="battery_states_topic" value="/battery/server2" />
+  </include>
+</launch>
