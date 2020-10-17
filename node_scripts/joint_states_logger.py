@@ -25,9 +25,10 @@ class JointStatesLogger(object):
         position = msg.position
         velocity = msg.velocity
         effort = msg.effort
+        query = []
         for joint_name, pos, vel, eff in zip(
                 joint_names, position, velocity, effort):
-            query = [{
+            query.append({
                 "measurement": "joint_states",
                 "tags": {
                     "joint_name": joint_name
@@ -38,7 +39,8 @@ class JointStatesLogger(object):
                     "velocity": vel,
                     "effort": eff
                 }
-            }]
+            })
+        if len(query) > 0:
             self.client.write_points(query, time_precision='n')
 
 
