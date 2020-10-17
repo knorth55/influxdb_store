@@ -68,7 +68,8 @@ class MapTransformLogger(object):
                     "rotation.w": rotation.w,
                 }
             })
-        self.client.write_points(query, time_precision='n')
+        if len(query) > 0:
+            self.client.write_points(query, time_precision='n')
 
 
 if __name__ == '__main__':
