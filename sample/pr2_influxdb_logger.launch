@@ -7,5 +7,6 @@
     <arg name="database" value="$(arg database)" />
     <arg name="joint_states_topic" value="/joint_states" />
     <arg name="battery_states_topic" value="/battery/server2" />
+    <arg name="map_frame_id" value="map" />
   </include>
 </launch>
