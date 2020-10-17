@@ -8,7 +8,7 @@ ROS package for influxdb store
 ## Sample
 
 ```bash
-roslaunch influxdb_store pr2_influxdb_logger.launch
+roslaunch influxdb_store influxdb_logger.launch
 ```
 
 ## Logger
@@ -86,3 +86,22 @@ Influxdb port number
 - `~database` (default: `test`)
 
 Influxdb database name
+
+
+## For JSK PR2 users
+
+### PR1012
+
+```bash
+rossetip
+rossetmaster pr1012
+roslaunch influxdb pr2_influxdb_logger.launch database:=pr1012
+```
+
+### PR1040
+
+```bash
+rossetip
+rossetmaster pr1040
+roslaunch influxdb pr2_influxdb_logger.launch database:=pr1040
+```
