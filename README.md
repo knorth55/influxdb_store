@@ -37,6 +37,32 @@ Influxdb port number
 
 Influxdb database name
 
+### `map_transform_logger.py`
+
+Logger for transfrom relative to `map_frame` 
+
+#### Parameters
+
+- `~host` (default: `localhost`)
+
+Influxdb host address
+
+- `~port` (default: `8086`)
+
+Influxdb port number
+
+- `~database` (default: `test`)
+
+Influxdb database name
+
+- `~map_frame_id` (default: `map`)
+
+Map frame id
+
+- `~update_rate` (default: `0.5`)
+
+Update rate
+
 ### `battery_states_logger.py`
 
 Logger for `pr2_msgs/BatteryServer2`
