@@ -22,7 +22,29 @@ class BatteryStatesLogger(object):
     def _cb(self, msg):
         time = timestamp_to_influxdb_time(msg.header.stamp)
         battery_id = msg.id
-        battery_charge = msg.average_charge / 100.0
+        battery0_temp = msg.battery[0].battery_register[8] / 10.0 - 273.15
+        battery1_temp = msg.battery[1].battery_register[8] / 10.0 - 273.15
+        battery2_temp = msg.battery[2].battery_register[8] / 10.0 - 273.15
+        battery3_temp = msg.battery[3].battery_register[8] / 10.0 - 273.15
+        battery0_voltage = msg.battery[0].battery_register[9] / 1000.0
+        battery1_voltage = msg.battery[1].battery_register[9] / 1000.0
+        battery2_voltage = msg.battery[2].battery_register[9] / 1000.0
+        battery3_voltage = msg.battery[3].battery_register[9] / 1000.0
+        battery0_current = msg.battery[0].battery_register[11] / 1000.0
+        battery1_current = msg.battery[1].battery_register[11] / 1000.0
+        battery2_current = msg.battery[2].battery_register[11] / 1000.0
+        battery3_current = msg.battery[3].battery_register[11] / 1000.0
+        battery0_charge = msg.battery[0].battery_register[13]
+        battery1_charge = msg.battery[1].battery_register[13]
+        battery2_charge = msg.battery[2].battery_register[13]
+        battery3_charge = msg.battery[3].battery_register[13]
+        average_temp = (battery0_temp + battery1_temp
+                        + battery2_temp + battery3_temp) / 4.0
+        average_voltage = (battery0_voltage + battery1_voltage
+                           + battery2_voltage + battery3_voltage) / 4.0
+        average_current = (battery0_current + battery1_current
+                           + battery2_current + battery3_current) / 4.0
+        average_charge = msg.average_charge / 100.0
         query = [{
             "measurement": "battery_states",
             "tags": {
@@ -30,7 +52,26 @@ class BatteryStatesLogger(object):
             },
             "time": time,
             "fields": {
-                "charge_percent": battery_charge,
+                "temperature": average_temp,
+                "voltage": average_voltage,
+                "current": average_current,
+                "charge_percent": average_charge,
+                "battery0_temperature": battery0_temp,
+                "battery1_temperature": battery1_temp,
+                "battery2_temperature": battery2_temp,
+                "battery3_temperature": battery3_temp,
+                "battery0_voltage": battery0_voltage,
+                "battery1_voltage": battery1_voltage,
+                "battery2_voltage": battery2_voltage,
+                "battery3_voltage": battery3_voltage,
+                "battery0_current": battery0_current,
+                "battery1_current": battery1_current,
+                "battery2_current": battery2_current,
+                "battery3_current": battery3_current,
+                "battery0_charge_percent": battery0_charge,
+                "battery1_charge_percent": battery1_charge,
+                "battery2_charge_percent": battery2_charge,
+                "battery3_charge_percent": battery3_charge,
             }
         }]
         self.client.write_points(query, time_precision='n')
