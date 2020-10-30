@@ -8,7 +8,7 @@ from influxdb_store.utils import timestamp_to_influxdb_time
 from pr2_msgs.msg import BatteryServer2
 
 
-class BatteryStatesLogger(object):
+class PR2BatteryStatesLogger(object):
     def __init__(self):
         host = rospy.get_param('~host', 'localhost')
         port = rospy.get_param('~port', 8086)
@@ -78,6 +78,6 @@ class BatteryStatesLogger(object):
 
 
 if __name__ == '__main__':
-    rospy.init_node('battery_states_logger')
-    logger = BatteryStatesLogger()
+    rospy.init_node('pr2_battery_states_logger')
+    logger = PR2BatteryStatesLogger()
     rospy.spin()
