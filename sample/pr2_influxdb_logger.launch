@@ -1,12 +1,24 @@
 <launch>
+  <arg name="host" default="localhost" />
+  <arg name="port" default="8086" />
   <arg name="database" default="pr1040" />
+  <arg name="joint_states_topic" default="/joint_states" />
+  <arg name="battery_states_topic" default="/battery/server2" />
+  <arg name="map_frame_id" default="map" />
 
   <include file="$(find influxdb_store)/launch/influxdb_logger.launch">
-    <arg name="host" value="localhost" />
-    <arg name="port" value="8086" />
+    <arg name="host" value="$(arg host)" />
+    <arg name="port" value="$(arg port)" />
     <arg name="database" value="$(arg database)" />
-    <arg name="joint_states_topic" value="/joint_states" />
-    <arg name="battery_states_topic" value="/battery/server2" />
-    <arg name="map_frame_id" value="map" />
+    <arg name="joint_states_topic" value="$(arg joint_states_topic)" />
+    <arg name="map_frame_id" value="$(arg map_frame_id)" />
   </include>
+
+  <include file="$(find influxdb_store)/launch/pr2_battery_logger.launch">
+    <arg name="host" value="$(arg host)" />
+    <arg name="port" value="$(arg port)" />
+    <arg name="database" value="$(arg database)" />
+    <arg name="battery_states_topic" value="$(arg battery_states_topic)" />
+  </include>
+
 </launch>
