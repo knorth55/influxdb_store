@@ -47,7 +47,13 @@ class MapTransformLogger(object):
             try:
                 transform_stamped = self.tf_buffer.lookup_transform(
                     self.map_frame_id, child_id, timestamp)
-            except tf2_ros.ExtrapolationException:
+            except tf2_ros.ExtrapolationException as e:
+                rospy.logerr_throttle(
+                    60.0, 'tf2_ros.ExtrapolationException: {}'.format(e))
+                continue
+            except tf2_ros.ConnectivityException as e:
+                rospy.logerr_throttle(
+                    60.0, 'tf2_ros.ConnectivityException: {}'.format(e))
                 continue
             translation = transform_stamped.transform.translation
             rotation = transform_stamped.transform.rotation
