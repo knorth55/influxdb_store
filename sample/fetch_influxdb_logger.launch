@@ -1,0 +1,24 @@
+<launch>
+  <arg name="host" default="localhost" />
+  <arg name="port" default="8086" />
+  <arg name="database" default="fetch15" />
+  <arg name="joint_states_topic" default="/joint_states" />
+  <arg name="battery_states_topic" default="/battery_state" />
+  <arg name="map_frame_id" default="map" />
+
+  <include file="$(find influxdb_store)/launch/influxdb_logger.launch">
+    <arg name="host" value="$(arg host)" />
+    <arg name="port" value="$(arg port)" />
+    <arg name="database" value="$(arg database)" />
+    <arg name="joint_states_topic" value="$(arg joint_states_topic)" />
+    <arg name="map_frame_id" value="$(arg map_frame_id)" />
+  </include>
+
+  <include file="$(find influxdb_store)/launch/fetch_battery_logger.launch">
+    <arg name="host" value="$(arg host)" />
+    <arg name="port" value="$(arg port)" />
+    <arg name="database" value="$(arg database)" />
+    <arg name="battery_states_topic" value="$(arg battery_states_topic)" />
+  </include>
+
+</launch>
