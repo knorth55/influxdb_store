@@ -74,7 +74,8 @@ class PR2BatteryStatesLogger(object):
                 "battery3_charge_percent": battery3_charge,
             }
         }]
-        self.client.write_points(query, time_precision='n')
+        if len(query) > 0:
+            self.client.write_points(query, time_precision='ms')
 
 
 if __name__ == '__main__':

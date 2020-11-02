@@ -75,7 +75,7 @@ class MapTransformLogger(object):
                 }
             })
         if len(query) > 0:
-            self.client.write_points(query, time_precision='n')
+            self.client.write_points(query, time_precision='ms')
 
 
 if __name__ == '__main__':

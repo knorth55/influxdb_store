@@ -33,7 +33,8 @@ class FetchBatteryStatesLogger(object):
                 "charge_percent": charge_percent,
             }
         }]
-        self.client.write_points(query, time_precision='n')
+        if len(query) > 0:
+            self.client.write_points(query, time_precision='ms')
 
 
 if __name__ == '__main__':
