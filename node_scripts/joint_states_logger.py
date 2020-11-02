@@ -17,7 +17,7 @@ class JointStatesLogger(object):
             host=host, port=port, database=database)
         self.client.create_database(database)
         self.sub = rospy.Subscriber(
-            '~input', JointState, self._cb, queue_size=10)
+            '~input', JointState, self._cb, queue_size=1)
 
     def _cb(self, msg):
         time = timestamp_to_influxdb_time(msg.header.stamp)
