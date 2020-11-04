@@ -15,6 +15,7 @@
   <buildtool_depend condition="$ROS_PYTHON_VERSION == 3">python3-setuptools</buildtool_depend>
 
   <exec_depend>pr2_msgs</exec_depend>
+  <exec_depend>python-influxdb</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
 
   <export>
