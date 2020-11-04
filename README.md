@@ -1,4 +1,5 @@
 # influxdb_store
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/knorth55/influxdb_store/CI/master)](https://github.com/knorth55/influxdb_store/actions)
 
 ROS package for influxdb store
 
