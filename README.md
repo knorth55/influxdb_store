@@ -96,7 +96,7 @@ Influxdb database name
 ```bash
 rossetip
 rossetmaster pr1012
-roslaunch influxdb pr2_influxdb_logger.launch database:=pr1012
+roslaunch influxdb_store pr2_influxdb_logger.launch database:=pr1012
 ```
 
 ### PR1040
@@ -104,5 +104,25 @@ roslaunch influxdb pr2_influxdb_logger.launch database:=pr1012
 ```bash
 rossetip
 rossetmaster pr1040
-roslaunch influxdb pr2_influxdb_logger.launch database:=pr1040
+roslaunch influxdb_store pr2_influxdb_logger.launch database:=pr1040
 ```
+
+### Fetch15
+
+```bash
+rossetip
+rossetmaster fetch15
+roslaunch influxdb_store fetch_influxdb_logger.launch database:=fetch15
+```
+
+### Fetch1075
+
+```bash
+rossetip
+rossetmaster fetch1075
+roslaunch influxdb_store fetch_influxdb_logger.launch database:=fetch1075
+```
+
+### Systemctl services
+
+Please see [jsk_database](https://github.com/knorth55/jsk_database).
