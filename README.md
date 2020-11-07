@@ -1,10 +1,10 @@
 # influxdb_store
+
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/knorth55/influxdb_store/CI/master)](https://github.com/knorth55/influxdb_store/actions)
 
 ROS package for influxdb store
 
 ![influxdb_grafana](./media/influxdb_grafana.png)
-
 
 ## Sample
 
@@ -40,7 +40,7 @@ Influxdb database name
 
 ### `map_transform_logger.py`
 
-Logger for transfrom relative to `map_frame` 
+Logger for transfrom relative to `map_frame`
 
 #### Parameters
 
@@ -87,7 +87,6 @@ Influxdb port number
 - `~database` (default: `test`)
 
 Influxdb database name
-
 
 ## For JSK PR2 users
 
