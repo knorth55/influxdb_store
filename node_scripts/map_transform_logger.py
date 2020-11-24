@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import influxdb
+import numpy as np
 import rospy
 import yaml
 
@@ -57,6 +58,9 @@ class MapTransformLogger(object):
                 continue
             translation = transform_stamped.transform.translation
             rotation = transform_stamped.transform.rotation
+            theta = 2 * np.arctan(
+                np.linalg.norm(
+                    [rotation.x, rotation.y, rotation.z]) / rotation.w)
             query.append({
                 "measurement": "map_transform",
                 "tags": {
@@ -72,6 +76,7 @@ class MapTransformLogger(object):
                     "rotation.y": rotation.y,
                     "rotation.z": rotation.z,
                     "rotation.w": rotation.w,
+                    "rotation.theta": theta,
                 }
             })
         if len(query) > 0:
