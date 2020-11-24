@@ -6,8 +6,8 @@
   <arg name="joint_states_topic" default="/joint_states" />
   <arg name="battery_states_topic" default="/battery_state" />
   <arg name="map_frame_id" default="map" />
-  <arg name="network_states_transmit_topic" default="/$(arg robot_name)/wan0/transmit" />
-  <arg name="network_states_receive_topic"  default="/$(arg robot_name)/wan0/receive" />
+  <arg name="network_states_transmit_topic" default="/$(arg robot_name)/wlan0/transmit" />
+  <arg name="network_states_receive_topic"  default="/$(arg robot_name)/wlan0/receive" />
 
   <include file="$(find influxdb_store)/launch/influxdb_logger.launch">
     <arg name="host" value="$(arg host)" />
