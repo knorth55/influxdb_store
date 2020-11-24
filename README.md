@@ -88,6 +88,34 @@ Influxdb port number
 
 Influxdb database name
 
+### `network_states_logger.py`
+
+Logger for network information published by [`jsk_network_tools/network_status.py`](https://github.com/jsk-ros-pkg/jsk_common/tree/master/jsk_network_tools)
+
+#### Subscribing topic
+
+- `~input/receive` (`std_msgs/Float32`)
+
+receiving bps topic name
+
+- `~input/transmit` (`std_msgs/Float32`)
+
+Transmitting bps topic name
+
+#### Parameters
+
+- `~host` (default: `localhost`)
+
+Influxdb host address
+
+- `~port` (default: `8086`)
+
+Influxdb port number
+
+- `~database` (default: `test`)
+
+Influxdb database name
+
 ## For JSK PR2 users
 
 ### PR1012
@@ -95,7 +123,7 @@ Influxdb database name
 ```bash
 rossetip
 rossetmaster pr1012
-roslaunch influxdb_store pr2_influxdb_logger.launch database:=pr1012
+roslaunch influxdb_store pr2_influxdb_logger.launch robot_name:=pr1012
 ```
 
 ### PR1040
@@ -103,7 +131,7 @@ roslaunch influxdb_store pr2_influxdb_logger.launch database:=pr1012
 ```bash
 rossetip
 rossetmaster pr1040
-roslaunch influxdb_store pr2_influxdb_logger.launch database:=pr1040
+roslaunch influxdb_store pr2_influxdb_logger.launch robot_name:=pr1040
 ```
 
 ### Fetch15
@@ -111,7 +139,7 @@ roslaunch influxdb_store pr2_influxdb_logger.launch database:=pr1040
 ```bash
 rossetip
 rossetmaster fetch15
-roslaunch influxdb_store fetch_influxdb_logger.launch database:=fetch15
+roslaunch influxdb_store fetch_influxdb_logger.launch robot_name:=fetch15
 ```
 
 ### Fetch1075
@@ -119,7 +147,7 @@ roslaunch influxdb_store fetch_influxdb_logger.launch database:=fetch15
 ```bash
 rossetip
 rossetmaster fetch1075
-roslaunch influxdb_store fetch_influxdb_logger.launch database:=fetch1075
+roslaunch influxdb_store fetch_influxdb_logger.launch robot_name:=fetch1075
 ```
 
 ### Systemctl services
