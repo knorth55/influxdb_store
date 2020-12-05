@@ -10,7 +10,7 @@
 
   <node name="joint_states_logger" pkg="influxdb_store" type="joint_states_logger.py"
         output="screen">
-    <remap from="~input" to="$(arg joint_states_topic)" /> 
+    <remap from="~input" to="$(arg joint_states_topic)" />
     <rosparam subst_value="true">
       host: $(arg host)
       port: $(arg port)
@@ -25,7 +25,7 @@
       port: $(arg port)
       database: $(arg database)
       frame_id: $(arg map_frame_id)
-      update_rate: 0.2
+      update_frequency: 30
     </rosparam>
   </node>
 
@@ -36,14 +36,14 @@
       port: $(arg port)
       database: $(arg database)
       frame_id: $(arg base_frame_id)
-      update_rate: 0.2
+      update_frequency: 30
     </rosparam>
   </node>
 
   <node name="network_states_logger" pkg="influxdb_store" type="network_states_logger.py"
         output="screen">
-    <remap from="~input/transmit" to="$(arg network_states_transmit_topic)" /> 
-    <remap from="~input/receive" to="$(arg network_states_receive_topic)" /> 
+    <remap from="~input/transmit" to="$(arg network_states_transmit_topic)" />
+    <remap from="~input/receive" to="$(arg network_states_receive_topic)" />
     <rosparam subst_value="true">
       host: $(arg host)
       port: $(arg port)

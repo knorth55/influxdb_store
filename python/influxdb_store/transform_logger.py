@@ -1,6 +1,9 @@
+import copy
 import influxdb
 import numpy as np
 import rospy
+import threading
+import time
 import yaml
 
 import tf2_ros
@@ -16,6 +19,12 @@ class TransformLogger(object):
 
         rospy.wait_for_service("~tf2_frames")
         self.get_frames = rospy.ServiceProxy("~tf2_frames", FrameGraph)
+        self.graph = {}
+        while len(self.graph) == 0:
+            try:
+                self.graph = yaml.load(self.get_frames().frame_yaml)
+            except Exception as e:
+                rospy.logerr(e)
 
         host = rospy.get_param('~host', 'localhost')
         port = rospy.get_param('~port', 8086)
@@ -24,22 +33,29 @@ class TransformLogger(object):
             host=host, port=port, database=database)
         self.client.create_database(database)
 
-        self.update_rate = rospy.Duration(
-            rospy.get_param('~update_rate', 0.2))
-        self.timer = rospy.Timer(self.update_rate, self._cb)
+        self.update_duration = 1.0 / rospy.get_param('~update_frequency', 30.0)
+        self.update_timer = rospy.Timer(
+            rospy.Duration(self.update_duration), self._update_cb)
 
-    def _cb(self, event):
-        if event.last_real:
-            timestamp = event.last_real
-        else:
-            timestamp = event.current_real - self.update_rate
-        time = timestamp_to_influxdb_time(timestamp)
-        try:
-            graph = yaml.load(self.get_frames().frame_yaml)
-        except Exception as e:
-            rospy.logerr(e)
-            return
+        self.duration = rospy.get_param('~duration', 3.0)
+        self.write_timer = rospy.Timer(
+            rospy.Duration(self.duration), self._timer_cb)
 
+        graph_duration = rospy.get_param('~graph_duration', 60.0)
+        self.graph_timer = rospy.Timer(
+            rospy.Duration(graph_duration), self._graph_cb)
+
+        self.lock = threading.Lock()
+        self.graph_lock = threading.Lock()
+        self.query = []
+
+    def _update_cb(self, event):
+        # if event.last_real:
+        #     timestamp = event.last_real
+        # else:
+        #     timestamp = event.current_real - self.update_rate
+        timestamp = event.current_real
+        influx_time = timestamp_to_influxdb_time(timestamp)
         trans_x_fields = {}
         trans_y_fields = {}
         trans_z_fields = {}
@@ -48,10 +64,14 @@ class TransformLogger(object):
         rot_z_fields = {}
         rot_w_fields = {}
         rot_theta_fields = {}
+
+        with self.graph_lock:
+            graph = copy.deepcopy(self.graph)
+
         for child_frame_id, _ in graph.items():
             try:
                 transform_stamped = self.tf_buffer.lookup_transform(
-                    self.frame_id, child_frame_id, timestamp)
+                    self.frame_id, child_frame_id, rospy.Time(0))
             except tf2_ros.ExtrapolationException as e:
                 rospy.logerr_throttle(
                     60.0, 'tf2_ros.ExtrapolationException: {}'.format(e))
@@ -75,102 +95,127 @@ class TransformLogger(object):
             rot_w_fields[child_frame_id] = rotation.w
             rot_theta_fields[child_frame_id] = theta
 
-        query = []
-        if len(trans_x_fields) > 0:
-            query.append({
-                "measurement": self.measurement_name,
-                "tags": {
-                    "type": "translation",
-                    "field": "x",
-                    "frame_id": self.frame_id
-                },
-                "time": time,
-                "fields": trans_x_fields
-            })
+        with self.lock:
+            if len(trans_x_fields) > 0:
+                self.query.append({
+                    "measurement": self.measurement_name,
+                    "tags": {
+                        "type": "translation",
+                        "field": "x",
+                        "frame_id": self.frame_id
+                    },
+                    "time": influx_time,
+                    "fields": trans_x_fields
+                })
 
-        if len(trans_y_fields) > 0:
-            query.append({
-                "measurement": self.measurement_name,
-                "tags": {
-                    "type": "translation",
-                    "field": "y",
-                    "frame_id": self.frame_id
-                },
-                "time": time,
-                "fields": trans_y_fields
-            })
+            if len(trans_y_fields) > 0:
+                self.query.append({
+                    "measurement": self.measurement_name,
+                    "tags": {
+                        "type": "translation",
+                        "field": "y",
+                        "frame_id": self.frame_id
+                    },
+                    "time": influx_time,
+                    "fields": trans_y_fields
+                })
 
-        if len(trans_z_fields) > 0:
-            query.append({
-                "measurement": self.measurement_name,
-                "tags": {
-                    "type": "translation",
-                    "field": "z",
-                    "frame_id": self.frame_id
-                },
-                "time": time,
-                "fields": trans_z_fields
-            })
+            if len(trans_z_fields) > 0:
+                self.query.append({
+                    "measurement": self.measurement_name,
+                    "tags": {
+                        "type": "translation",
+                        "field": "z",
+                        "frame_id": self.frame_id
+                    },
+                    "time": influx_time,
+                    "fields": trans_z_fields
+                })
 
-        if len(rot_x_fields) > 0:
-            query.append({
-                "measurement": self.measurement_name,
-                "tags": {
-                    "type": "rotation",
-                    "field": "x",
-                    "frame_id": self.frame_id
-                },
-                "time": time,
-                "fields": rot_x_fields
-            })
+            if len(rot_x_fields) > 0:
+                self.query.append({
+                    "measurement": self.measurement_name,
+                    "tags": {
+                        "type": "rotation",
+                        "field": "x",
+                        "frame_id": self.frame_id
+                    },
+                    "time": influx_time,
+                    "fields": rot_x_fields
+                })
 
-        if len(rot_y_fields) > 0:
-            query.append({
-                "measurement": self.measurement_name,
-                "tags": {
-                    "type": "rotation",
-                    "field": "y",
-                    "frame_id": self.frame_id
-                },
-                "time": time,
-                "fields": rot_y_fields
-            })
+            if len(rot_y_fields) > 0:
+                self.query.append({
+                    "measurement": self.measurement_name,
+                    "tags": {
+                        "type": "rotation",
+                        "field": "y",
+                        "frame_id": self.frame_id
+                    },
+                    "time": influx_time,
+                    "fields": rot_y_fields
+                })
 
-        if len(rot_z_fields) > 0:
-            query.append({
-                "measurement": self.measurement_name,
-                "tags": {
-                    "type": "rotation",
-                    "field": "z",
-                    "frame_id": self.frame_id
-                },
-                "time": time,
-                "fields": rot_z_fields
-            })
+            if len(rot_z_fields) > 0:
+                self.query.append({
+                    "measurement": self.measurement_name,
+                    "tags": {
+                        "type": "rotation",
+                        "field": "z",
+                        "frame_id": self.frame_id
+                    },
+                    "time": influx_time,
+                    "fields": rot_z_fields
+                })
 
-        if len(rot_w_fields) > 0:
-            query.append({
-                "measurement": self.measurement_name,
-                "tags": {
-                    "type": "rotation",
-                    "field": "w",
-                    "frame_id": self.frame_id
-                },
-                "time": time,
-                "fields": rot_w_fields
-            })
+            if len(rot_w_fields) > 0:
+                self.query.append({
+                    "measurement": self.measurement_name,
+                    "tags": {
+                        "type": "rotation",
+                        "field": "w",
+                        "frame_id": self.frame_id
+                    },
+                    "time": influx_time,
+                    "fields": rot_w_fields
+                })
 
-        if len(rot_theta_fields) > 0:
-            query.append({
-                "measurement": self.measurement_name,
-                "tags": {
-                    "type": "rotation",
-                    "field": "theta",
-                    "frame_id": self.frame_id
-                },
-                "time": time,
-                "fields": rot_theta_fields
-            })
+            if len(rot_theta_fields) > 0:
+                self.query.append({
+                    "measurement": self.measurement_name,
+                    "tags": {
+                        "type": "rotation",
+                        "field": "theta",
+                        "frame_id": self.frame_id
+                    },
+                    "time": influx_time,
+                    "fields": rot_theta_fields
+                })
 
-        if len(query) > 0:
-            self.client.write_points(query, time_precision='ms')
+    def _timer_cb(self, event):
+        start_time = time.time() * 1000
+        with self.lock:
+            if len(self.query) == 0:
+                return
+            query = copy.deepcopy(self.query)
+            self.query = []
+        end_time = time.time() * 1000
+        rospy.logdebug("copy time: {}ms".format(end_time - start_time))
+        rospy.logdebug("data length: {}".format(len(query)))
+        self.client.write_points(query, time_precision='ms')
+        end_time = time.time() * 1000
+        rospy.logdebug("timer cb time: {}ms".format(end_time - start_time))
+        if ((end_time - start_time) > (self.duration * 1000)):
+            rospy.logerr("timer cb time exceeds: {} > {}".format(
+                end_time - start_time, self.duration * 1000))
+
+    def _graph_cb(self, event):
+        graph = {}
+        try:
+            graph = yaml.load(self.get_frames().frame_yaml)
+        except Exception as e:
+            rospy.logerr(e)
+
+        if len(graph) > 0:
+            with self.graph_lock:
+                self.graph = graph
