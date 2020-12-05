@@ -25,7 +25,7 @@ class TransformLogger(object):
         self.client.create_database(database)
 
         self.update_rate = rospy.Duration(
-            rospy.get_param('~update_rate', 0.5))
+            rospy.get_param('~update_rate', 0.2))
         self.timer = rospy.Timer(self.update_rate, self._cb)
 
     def _cb(self, event):
@@ -76,86 +76,101 @@ class TransformLogger(object):
             rot_theta_fields[child_frame_id] = theta
 
         query = []
-        query.append({
-            "measurement": self.measurement_name,
-            "tags": {
-                "type": "translation",
-                "field": "x",
-                "frame_id": self.frame_id
-            },
-            "time": time,
-            "fields": trans_x_fields
-        })
-        query.append({
-            "measurement": self.measurement_name,
-            "tags": {
-                "type": "translation",
-                "field": "y",
-                "frame_id": self.frame_id
-            },
-            "time": time,
-            "fields": trans_y_fields
-        })
-        query.append({
-            "measurement": self.measurement_name,
-            "tags": {
-                "type": "translation",
-                "field": "z",
-                "frame_id": self.frame_id
-            },
-            "time": time,
-            "fields": trans_z_fields
-        })
-        query.append({
-            "measurement": self.measurement_name,
-            "tags": {
-                "type": "rotation",
-                "field": "x",
-                "frame_id": self.frame_id
-            },
-            "time": time,
-            "fields": rot_x_fields
-        })
-        query.append({
-            "measurement": self.measurement_name,
-            "tags": {
-                "type": "rotation",
-                "field": "y",
-                "frame_id": self.frame_id
-            },
-            "time": time,
-            "fields": rot_y_fields
-        })
-        query.append({
-            "measurement": self.measurement_name,
-            "tags": {
-                "type": "rotation",
-                "field": "z",
-                "frame_id": self.frame_id
-            },
-            "time": time,
-            "fields": rot_z_fields
-        })
-        query.append({
-            "measurement": self.measurement_name,
-            "tags": {
-                "type": "rotation",
-                "field": "w",
-                "frame_id": self.frame_id
-            },
-            "time": time,
-            "fields": rot_w_fields
-        })
-        query.append({
-            "measurement": self.measurement_name,
-            "tags": {
-                "type": "rotation",
-                "field": "theta",
-                "frame_id": self.frame_id
-            },
-            "time": time,
-            "fields": rot_theta_fields
-        })
+        if len(trans_x_fields) > 0:
+            query.append({
+                "measurement": self.measurement_name,
+                "tags": {
+                    "type": "translation",
+                    "field": "x",
+                    "frame_id": self.frame_id
+                },
+                "time": time,
+                "fields": trans_x_fields
+            })
+
+        if len(trans_y_fields) > 0:
+            query.append({
+                "measurement": self.measurement_name,
+                "tags": {
+                    "type": "translation",
+                    "field": "y",
+                    "frame_id": self.frame_id
+                },
+                "time": time,
+                "fields": trans_y_fields
+            })
+
+        if len(trans_z_fields) > 0:
+            query.append({
+                "measurement": self.measurement_name,
+                "tags": {
+                    "type": "translation",
+                    "field": "z",
+                    "frame_id": self.frame_id
+                },
+                "time": time,
+                "fields": trans_z_fields
+            })
+
+        if len(rot_x_fields) > 0:
+            query.append({
+                "measurement": self.measurement_name,
+                "tags": {
+                    "type": "rotation",
+                    "field": "x",
+                    "frame_id": self.frame_id
+                },
+                "time": time,
+                "fields": rot_x_fields
+            })
+
+        if len(rot_y_fields) > 0:
+            query.append({
+                "measurement": self.measurement_name,
+                "tags": {
+                    "type": "rotation",
+                    "field": "y",
+                    "frame_id": self.frame_id
+                },
+                "time": time,
+                "fields": rot_y_fields
+            })
+
+        if len(rot_z_fields) > 0:
+            query.append({
+                "measurement": self.measurement_name,
+                "tags": {
+                    "type": "rotation",
+                    "field": "z",
+                    "frame_id": self.frame_id
+                },
+                "time": time,
+                "fields": rot_z_fields
+            })
+
+        if len(rot_w_fields) > 0:
+            query.append({
+                "measurement": self.measurement_name,
+                "tags": {
+                    "type": "rotation",
+                    "field": "w",
+                    "frame_id": self.frame_id
+                },
+                "time": time,
+                "fields": rot_w_fields
+            })
+
+        if len(rot_theta_fields) > 0:
+            query.append({
+                "measurement": self.measurement_name,
+                "tags": {
+                    "type": "rotation",
+                    "field": "theta",
+                    "frame_id": self.frame_id
+                },
+                "time": time,
+                "fields": rot_theta_fields
+            })
 
         if len(query) > 0:
             self.client.write_points(query, time_precision='ms')

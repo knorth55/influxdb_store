@@ -25,7 +25,7 @@
       port: $(arg port)
       database: $(arg database)
       frame_id: $(arg map_frame_id)
-      update_rate: 0.5
+      update_rate: 0.2
     </rosparam>
   </node>
 
@@ -36,7 +36,7 @@
       port: $(arg port)
       database: $(arg database)
       frame_id: $(arg base_frame_id)
-      update_rate: 0.5
+      update_rate: 0.2
     </rosparam>
   </node>
 
