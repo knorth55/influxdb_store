@@ -67,7 +67,7 @@ class JointStatesLogger(object):
             self.query = []
         end_time = time.time() * 1000
         rospy.logdebug("copy time: {}ms".format(end_time - start_time))
-        rospy.logdebug("data length: {}ms".format(len(query)))
+        rospy.logdebug("data length: {}".format(len(query)))
         self.client.write_points(query, time_precision='ms')
         end_time = time.time() * 1000
         rospy.logdebug("timer cb time: {}ms".format(end_time - start_time))
