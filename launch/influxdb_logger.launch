@@ -4,6 +4,7 @@
   <arg name="database" />
   <arg name="joint_states_topic" />
   <arg name="map_frame_id" />
+  <arg name="base_frame_id" />
   <arg name="network_states_transmit_topic" />
   <arg name="network_states_receive_topic" />
 
@@ -23,7 +24,18 @@
       host: $(arg host)
       port: $(arg port)
       database: $(arg database)
-      map_frame_id: $(arg map_frame_id)
+      frame_id: $(arg map_frame_id)
+      update_rate: 0.5
+    </rosparam>
+  </node>
+
+  <node name="base_transform_logger" pkg="influxdb_store" type="base_transform_logger.py"
+        output="screen">
+    <rosparam subst_value="true">
+      host: $(arg host)
+      port: $(arg port)
+      database: $(arg database)
+      frame_id: $(arg base_frame_id)
       update_rate: 0.5
     </rosparam>
   </node>
