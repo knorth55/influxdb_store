@@ -33,6 +33,10 @@ class TransformLogger(object):
             host=host, port=port, database=database)
         self.client.create_database(database)
 
+        self.lock = threading.Lock()
+        self.graph_lock = threading.Lock()
+        self.query = []
+
         self.update_duration = 1.0 / rospy.get_param('~update_frequency', 30.0)
         self.update_timer = rospy.Timer(
             rospy.Duration(self.update_duration), self._update_cb)
@@ -44,10 +48,6 @@ class TransformLogger(object):
         graph_duration = rospy.get_param('~graph_duration', 60.0)
         self.graph_timer = rospy.Timer(
             rospy.Duration(graph_duration), self._graph_cb)
-
-        self.lock = threading.Lock()
-        self.graph_lock = threading.Lock()
-        self.query = []
 
     def _update_cb(self, event):
         # if event.last_real:
