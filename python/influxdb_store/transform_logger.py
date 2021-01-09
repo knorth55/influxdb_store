@@ -80,6 +80,10 @@ class TransformLogger(object):
                 rospy.logerr_throttle(
                     60.0, 'tf2_ros.ConnectivityException: {}'.format(e))
                 continue
+            except tf2_ros.LookupException as e:
+                rospy.logerr_throttle(
+                    60.0, 'tf2_ros.LookupException: {}'.format(e))
+                continue
             translation = transform_stamped.transform.translation
             rotation = transform_stamped.transform.rotation
             theta = 2 * np.arctan(
