@@ -16,6 +16,7 @@
 
   <exec_depend>pr2_msgs</exec_depend>
   <exec_depend>python-influxdb</exec_depend>
+  <exec_depend>python-tz</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
 
   <export>
