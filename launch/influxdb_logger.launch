@@ -2,14 +2,20 @@
   <arg name="host" />
   <arg name="port" />
   <arg name="database" />
-  <arg name="joint_states_topic" />
-  <arg name="map_frame_id" />
-  <arg name="base_frame_id" />
-  <arg name="network_states_transmit_topic" />
-  <arg name="network_states_receive_topic" />
+
+  <arg name="launch_joint_states_logger" default="true" />
+  <arg name="launch_map_transform_logger" default="true" />
+  <arg name="launch_base_transform_logger" default="true" />
+  <arg name="launch_network_states_logger" default="true" />
+
+  <arg name="joint_states_topic" default="/joint_states" />
+  <arg name="map_frame_id" default="map" />
+  <arg name="base_frame_id" default="base_link" />
+  <arg name="network_states_transmit_topic" default="/$(arg database)/wlan0/transmit" />
+  <arg name="network_states_receive_topic"  default="/$(arg database)/wlan0/receive" />
 
   <node name="joint_states_logger" pkg="influxdb_store" type="joint_states_logger.py"
-        output="screen" respawn="true">
+        output="screen" respawn="true" if="$(arg launch_joint_states_logger)" >
     <remap from="~input" to="$(arg joint_states_topic)" />
     <rosparam subst_value="true">
       host: $(arg host)
@@ -19,7 +25,7 @@
   </node>
 
   <node name="map_transform_logger" pkg="influxdb_store" type="map_transform_logger.py"
-        output="screen" respawn="true">
+        output="screen" respawn="true" if="$(arg launch_map_transform_logger)" >
     <rosparam subst_value="true">
       host: $(arg host)
       port: $(arg port)
@@ -30,7 +36,7 @@
   </node>
 
   <node name="base_transform_logger" pkg="influxdb_store" type="base_transform_logger.py"
-        output="screen" respawn="true">
+        output="screen" respawn="true" if="$(arg launch_base_transform_logger)" >
     <rosparam subst_value="true">
       host: $(arg host)
       port: $(arg port)
@@ -41,7 +47,7 @@
   </node>
 
   <node name="network_states_logger" pkg="influxdb_store" type="network_states_logger.py"
-        output="screen" respawn="true">
+        output="screen" respawn="true" if="$(arg launch_network_states_logger)" >
     <remap from="~input/transmit" to="$(arg network_states_transmit_topic)" />
     <remap from="~input/receive" to="$(arg network_states_receive_topic)" />
     <rosparam subst_value="true">
