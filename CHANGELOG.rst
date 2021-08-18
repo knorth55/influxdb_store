@@ -2,8 +2,8 @@
 Changelog for package influxdb_store
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2021-08-18)
+------------------
 * add baxter_influxdb_logger.launch
 * disable jscpd linter
 * use pytz
