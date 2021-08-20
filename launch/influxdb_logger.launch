@@ -25,7 +25,7 @@
   </node>
 
   <node name="map_transform_logger" pkg="influxdb_store" type="map_transform_logger.py"
-        output="screen" respawn="false" if="$(arg launch_map_transform_logger)" required="true" >
+        output="screen" respawn="true" if="$(arg launch_map_transform_logger)" >
     <rosparam subst_value="true">
       host: $(arg host)
       port: $(arg port)
@@ -36,7 +36,7 @@
   </node>
 
   <node name="base_transform_logger" pkg="influxdb_store" type="base_transform_logger.py"
-        output="screen" respawn="false" if="$(arg launch_base_transform_logger)" required="true" >
+        output="screen" respawn="true" if="$(arg launch_base_transform_logger)" >
     <rosparam subst_value="true">
       host: $(arg host)
       port: $(arg port)
@@ -47,7 +47,7 @@
   </node>
 
   <node name="network_states_logger" pkg="influxdb_store" type="network_states_logger.py"
-        output="screen" respawn="false" if="$(arg launch_network_states_logger)" required="true" >
+        output="screen" respawn="true" if="$(arg launch_network_states_logger)" >
     <remap from="~input/transmit" to="$(arg network_states_transmit_topic)" />
     <remap from="~input/receive" to="$(arg network_states_receive_topic)" />
     <rosparam subst_value="true">

@@ -3,6 +3,7 @@
 import copy
 import influxdb
 import rospy
+import sys
 import threading
 import time
 
@@ -61,8 +62,9 @@ class JointStatesLogger(object):
     def _timer_cb(self, event):
         start_time = time.time() * 1000
         with self.lock:
+            # no joint_states coming, so stop nodes
             if len(self.query) == 0:
-                return
+                sys.exit(1)
             query = copy.deepcopy(self.query)
             self.query = []
         end_time = time.time() * 1000
