@@ -2,6 +2,7 @@ import copy
 import influxdb
 import numpy as np
 import rospy
+import sys
 import threading
 import time
 import yaml
@@ -20,11 +21,17 @@ class TransformLogger(object):
         rospy.wait_for_service("~tf2_frames")
         self.get_frames = rospy.ServiceProxy("~tf2_frames", FrameGraph)
         self.graph = {}
+
+        trial_count = 0
         while len(self.graph) == 0:
             try:
+                if trial_count > 1200:
+                    sys.exit(1)
                 self.graph = yaml.load(self.get_frames().frame_yaml)
             except Exception as e:
-                rospy.logerr(e)
+                rospy.logerr(60.0, 'Failed to get graph: {}'.format(e))
+                rospy.sleep(0.1)
+                trial_count = trial_count + 1
 
         host = rospy.get_param('~host', 'localhost')
         port = rospy.get_param('~port', 8086)
