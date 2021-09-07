@@ -1,6 +1,7 @@
 # influxdb_store
 
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/knorth55/influxdb_store/CI/master)](https://github.com/knorth55/influxdb_store/actions)
+[![main](https://github.com/knorth55/influxdb_store/actions/workflows/main.yml/badge.svg)](https://github.com/knorth55/influxdb_store/actions/workflows/main.yml)
+[![linter](https://github.com/knorth55/influxdb_store/actions/workflows/linter.yaml/badge.svg)](https://github.com/knorth55/influxdb_store/actions/workflows/linter.yaml)
 
 ROS package for influxdb store
 
