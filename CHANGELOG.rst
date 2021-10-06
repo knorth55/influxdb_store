@@ -2,8 +2,8 @@
 Changelog for package influxdb_store
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2021-10-06)
+------------------
 * Update README.md
 * add system scripts
 * check joint_states for connection test
