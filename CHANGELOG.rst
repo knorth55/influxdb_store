@@ -2,6 +2,16 @@
 Changelog for package influxdb_store
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update README.md
+* add system scripts
+* check joint_states for connection test
+* try for 2 minutes
+* add sysmtemd scripts
+* add required and respawn
+* Contributors: Shingo Kitagawa
+
 0.0.1 (2021-08-18)
 ------------------
 * add baxter_influxdb_logger.launch
