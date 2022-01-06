@@ -29,7 +29,8 @@ class TransformLogger(object):
                     sys.exit(1)
                 self.graph = yaml.load(self.get_frames().frame_yaml)
             except Exception as e:
-                rospy.logerr_throttle(60.0, 'Failed to get graph: {}'.format(e))
+                rospy.logerr_throttle(
+                    60.0, 'Failed to get graph: {}'.format(e))
                 rospy.sleep(0.1)
                 trial_count = trial_count + 1
 
