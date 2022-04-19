@@ -75,7 +75,10 @@ class PR2BatteryStatesLogger(object):
             }
         }]
         if len(query) > 0:
-            self.client.write_points(query, time_precision='ms')
+            try:
+                self.client.write_points(query, time_precision='ms')
+            except influxdb.exceptions.InfluxDBServerError as e:
+                rospy.logerr("InfluxDB error: {}".format(e))
 
 
 if __name__ == '__main__':

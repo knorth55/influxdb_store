@@ -33,7 +33,10 @@ class FetchBatteryStatesLogger(object):
                 "charge_percent": charge_percent,
             }
         }]
-        self.client.write_points(query, time_precision='ms')
+        try:
+            self.client.write_points(query, time_precision='ms')
+        except influxdb.exceptions.InfluxDBServerError as e:
+            rospy.logerr("InfluxDB error: {}".format(e))
 
 
 if __name__ == '__main__':

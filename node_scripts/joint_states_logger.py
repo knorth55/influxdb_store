@@ -70,7 +70,10 @@ class JointStatesLogger(object):
         end_time = time.time() * 1000
         rospy.logdebug("copy time: {}ms".format(end_time - start_time))
         rospy.logdebug("data length: {}".format(len(query)))
-        self.client.write_points(query, time_precision='ms')
+        try:
+            self.client.write_points(query, time_precision='ms')
+        except influxdb.exceptions.InfluxDBServerError as e:
+            rospy.logerr("InfluxDB error: {}".format(e))
         end_time = time.time() * 1000
         rospy.logdebug("timer cb time: {}ms".format(end_time - start_time))
         if ((end_time - start_time) > (self.duration * 1000)):

@@ -34,7 +34,10 @@ class NetworkStatesLogger(object):
                 "bps": transmit_bps,
             }
         }]
-        self.client.write_points(query, time_precision='ms')
+        try:
+            self.client.write_points(query, time_precision='ms')
+        except influxdb.exceptions.InfluxDBServerError as e:
+            rospy.logerr("InfluxDB error: {}".format(e))
 
     def _receive_cb(self, msg):
         receive_time = timestamp_to_influxdb_time(rospy.Time.now())
@@ -49,7 +52,10 @@ class NetworkStatesLogger(object):
                 "bps": receive_bps,
             }
         }]
-        self.client.write_points(query, time_precision='ms')
+        try:
+            self.client.write_points(query, time_precision='ms')
+        except influxdb.exceptions.InfluxDBServerError as e:
+            rospy.logerr("InfluxDB error: {}".format(e))
 
 
 if __name__ == '__main__':
