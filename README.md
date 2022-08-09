@@ -1,3 +1,5 @@
+# This project is merged to [jsk-ros-pkg/jsk_3rdparty](https://github.com/jsk-ros-pkg/jsk_3rdparty).
+
 # influxdb_store
 
 [![main](https://github.com/knorth55/influxdb_store/actions/workflows/main.yml/badge.svg)](https://github.com/knorth55/influxdb_store/actions/workflows/main.yml)
